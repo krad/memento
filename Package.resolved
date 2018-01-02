@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Clibavcodec",
+        "repositoryURL": "/Users/melgray/workspace/memento/Clibavcodec",
+        "state": {
+          "branch": null,
+          "revision": "2c206600ad2e5ad18d7f4ed69c3e5b029decbad4",
+          "version": "0.0.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
