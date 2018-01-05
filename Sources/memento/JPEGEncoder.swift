@@ -5,12 +5,15 @@ final public class JPEGEncoder {
     
     fileprivate var codec: AVCodec
     fileprivate var context: AVCodecContext
+    fileprivate var contextPtr: UnsafeMutablePointer<AVCodecContext>?
+    
     fileprivate var decodeContext: DecodeContext
     
     public init(decodeContext: DecodeContext) {
         avcodec_register_all()
         self.codec           = avcodec_find_encoder(AV_CODEC_ID_JPEG2000).pointee
-        self.context         = avcodec_alloc_context3(&self.codec).pointee
+        self.contextPtr      = avcodec_alloc_context3(&self.codec)
+        self.context         = self.contextPtr!.pointee
         self.decodeContext   = decodeContext
         
         self.context.pix_fmt             = decodeContext.codecContext.pix_fmt
@@ -28,7 +31,7 @@ final public class JPEGEncoder {
         avcodec_open2(&self.context, &self.codec, nil)
     }
     
-    public func encode(with vFrame: AVFrame) -> Data? {
+    final public func encode(with vFrame: AVFrame) -> Data? {
         var frame = vFrame
         var ret: Int32  = 0
         
@@ -38,16 +41,24 @@ final public class JPEGEncoder {
             return nil
         }
         
-        var packet = av_packet_alloc().pointee
+        var packetPtr = av_packet_alloc()
+        var packet    = packetPtr!.pointee
         ret = avcodec_receive_packet(&self.context, &packet)
         if ret < 0 {
-            print("FUCK")
+            print("Encoding failed (avcodec_receive_packet):", ret)
             return nil
         }
         
         let bytes = Array(UnsafeBufferPointer(start: packet.data, count: Int(packet.size)))
+
+        av_packet_free(&packetPtr)
+        
         return Data(bytes: bytes)
     
+    }
+    
+    deinit {
+        avcodec_free_context(&self.contextPtr)
     }
     
 }

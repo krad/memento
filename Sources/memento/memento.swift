@@ -17,17 +17,17 @@ final public class Memento {
     private var decodedFrameCnt = 0
     private var delegate: MementoProtocol
     
-    init(outputDir: URL, delegate: MementoProtocol) {
+    public init(outputDir: URL, delegate: MementoProtocol) {
         self.outputDir = outputDir
         self.delegate  = delegate
     }
     
-    func set(sps: [UInt8], pps: [UInt8]) {
+    final public func set(sps: [UInt8], pps: [UInt8]) {
         self.sps = sps
         self.pps = pps
     }
     
-    func decode(keyframe: [UInt8]) {
+    final public func decode(keyframe: [UInt8]) {
         if let sps = self.sps, let pps = self.pps {
             var payload: [UInt8] = delimiter + [0x67] + sps
             payload += delimiter + [0x68] + pps

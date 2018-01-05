@@ -52,10 +52,11 @@ final public class H264Decoder {
                     continue
                 }
                 
-                var picture = av_frame_alloc().pointee
+                let picturePtr = av_frame_alloc()
+                var picture    = picturePtr!.pointee
                 ret = avcodec_receive_frame(&self.context, &picture)
                 if ret < 0 {
-                    print("error decoding, avcodec_receive_frame", ret)
+                    print("error decoding, (avcodec_receive_frame)", ret)
                     continue
                 } else {
                     return DecodeContext(codecContext: self.context, frame: picture)
