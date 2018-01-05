@@ -3,11 +3,11 @@
     "pins": [
       {
         "package": "Clibavcodec",
-        "repositoryURL": "/Users/melgray/workspace/memento/Clibavcodec",
+        "repositoryURL": "https://www.github.com/krad/Clibavcodec.git",
         "state": {
           "branch": null,
-          "revision": "2c206600ad2e5ad18d7f4ed69c3e5b029decbad4",
-          "version": "0.0.1"
+          "revision": "22affdea1cc8766f73a4e6e479722dde2ffa384e",
+          "version": "0.0.3"
         }
       }
     ]
