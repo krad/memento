@@ -31,7 +31,7 @@ final public class Memento {
         if let sps = self.sps, let pps = self.pps {
             var payload: [UInt8] = delimiter + [0x67] + sps
             payload += delimiter + [0x68] + pps
-            payload += keyframe
+            payload += delimiter + keyframe
             
             if let decContext = self.h264Decoder.decode(payload) {
                 let jpgEncoder = JPEGEncoder(decodeContext: decContext)
