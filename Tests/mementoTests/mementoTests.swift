@@ -25,5 +25,10 @@ class mementoTests: XCTestCase {
         XCTAssertGreaterThan(jpeg!.count, 0)
         
     }
+    
+    static var allTests = [
+        ("Decoding h264 and producing a jpeg", test_that_we_can_decode_an_h264_encoded_iframe_and_produce_a_jpg),
+    ]
+
 
 }
