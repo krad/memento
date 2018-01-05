@@ -1,6 +1,6 @@
 import Foundation
 
-protocol MementoProtocol {
+public protocol MementoProtocol {
     func wroteJPEG(to url: URL)
     func failedToWriteJPEG(error: Error)
 }
