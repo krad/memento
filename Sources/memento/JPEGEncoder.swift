@@ -36,55 +36,7 @@ final public class JPEGEncoder {
         }
         var frame = vFrame
         
-        var ret : Int32 = 0
-//        let rgbFramePtr             = av_frame_alloc()
-//        rgbFramePtr?.pointee.format = AV_PIX_FMT_YUVJ420P.rawValue
-//        rgbFramePtr?.pointee.width  = vFrame.width
-//        rgbFramePtr?.pointee.height = vFrame.height
-        
-//        let swsContext = sws_getContext(vFrame.width, vFrame.height, decodeContext.codecContext.pix_fmt,
-//                                        vFrame.width, vFrame.height, AV_PIX_FMT_YUVJ420P,
-//                                        SWS_BILINEAR, nil, nil, nil)
-//
-        
-//        //// Get pointers to the input data
-//        var dataPointers: [UnsafePointer<UInt8>?] = []
-//        let mir = Mirror(reflecting: vFrame.data)
-//        for child in mir.children {
-//            if let value = child.value as? UnsafeMutablePointer<UInt8> {
-//                dataPointers.append(UnsafePointer(value))
-//            }
-//        }
-//
-//        //// Get points to the linesizes
-//        var lineSizes: [Int32] = []
-//        let lmir = Mirror(reflecting: vFrame.linesize)
-//        for child in lmir.children {
-//            if let value = child.value as? Int32 {
-//                if value > 0 {
-//                    lineSizes.append(value)
-//                }
-//            }
-//        }
-//
-//        let srcData  = UnsafePointer(dataPointers)
-//        let srcLines = UnsafePointer(lineSizes)
-//        var dstData = Array<UnsafeMutablePointer<UInt8>?>(repeating: nil, count: 4)
-//        var dstLines: Int32 = 0
-//
-//        ret = av_image_alloc(&dstData, &dstLines, vFrame.width, vFrame.height, AV_PIX_FMT_YUVJ420P, 1)
-//        if ret < 0 {
-//            print("Encoding failed (av_image_alloc) dst:", ret)
-//            return nil
-//        }
-//        let dstBufSize = ret
-//
-//        ret = sws_scale(swsContext, srcData, srcLines, 0, vFrame.height, dstData, &dstLines)
-//        if ret <= 0 {
-//            print("Encoding failed (sws_scale):", ret)
-//            return nil
-//        }
-        
+        var ret: Int32 = 0
         ret = avcodec_send_frame(&self.context, &frame)
         if ret < 0 {
             print("Encoding failed (avcodec_send_frame):", ret)
@@ -100,12 +52,9 @@ final public class JPEGEncoder {
         }
 
         let bytes = Array(UnsafeBufferPointer(start: packet.data, count: Int(packet.size)))
-        print(packet)
-
         av_packet_free(&packetPtr)
 
         return Data(bytes: bytes)
-    
     }
     
     deinit {
