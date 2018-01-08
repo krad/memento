@@ -24,6 +24,9 @@ class mementoTests: XCTestCase {
         XCTAssertNotNil(jpeg)
         XCTAssertGreaterThan(jpeg!.count, 0)
         
+        let url = URL.init(fileURLWithPath: "/tmp/0.jpg")
+        try? jpeg?.write(to: url)
+        
     }
     
     static var allTests = [
