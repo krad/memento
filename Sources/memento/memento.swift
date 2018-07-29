@@ -5,19 +5,19 @@ public protocol MementoProtocol {
     func failedToWriteJPEG(error: Error)
 }
 
-public enum OutputFormat {
-    case jpg
-    case png
+public enum OutputFormat: String, Codable {
+    case jpg = "jpg"
+    case png = "png"
 }
 
-public enum Rotation: UInt32 {
+public enum Rotation: UInt32, Codable {
     case none       = 0
     case ninety     = 90
     case oneEighty  = 180
     case twoSeventy = 270
 }
 
-public enum FitMode: String {
+public enum FitMode: String, Codable {
     case preserve   = "preserve"
     case stretch    = "stretch"
     case crop       = "crop"
@@ -25,7 +25,7 @@ public enum FitMode: String {
     case pad        = "pad"
 }
 
-public struct ThumbnailConfig {
+public struct ThumbnailConfig: Codable {
     var width: UInt32?
     var height: UInt32?
     var rotate: Rotation = .none
@@ -34,13 +34,13 @@ public struct ThumbnailConfig {
     var flipH: Bool      = false
 }
 
-public struct ThumbnailEncodeRequest {
+public struct ThumbnailEncodeRequest: Codable {
     var sps: [UInt8]?
     var pps: [UInt8]?
     var payload: [UInt8]
 }
 
-public struct Base64EncodedThumbnailRequest {
+public struct Base64EncodedThumbnailRequest: Codable {
     var sps: String?
     var pps: String?
     var payload: String
