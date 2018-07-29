@@ -71,17 +71,9 @@ public enum MementoError: Error {
 
 final public class Memento {
     
-    private var sps: [UInt8]?
-    private var pps: [UInt8]?
-    
     private let h264Decoder = H264Decoder()
     
     public init() { }
-    
-    final public func set(sps: [UInt8], pps: [UInt8]) {
-        self.sps = sps
-        self.pps = pps
-    }
     
     final public func decode(_ req: Base64EncodedThumbnailRequest) throws -> Data? {
         if let sps = req.spsBytes, let pps = req.ppsBytes {
@@ -98,26 +90,6 @@ final public class Memento {
             }
         }
         throw MementoError.needDecoderConfig
-    }
-    
-    final public func decode(keyframe: [UInt8]) throws -> Data? {
-        if let sps = self.sps, let pps = self.pps {
-//            var payload: [UInt8] = delimiter + [0x67] + sps
-//            payload += delimiter + [0x68] + pps
-//            payload += delimiter + keyframe
-            
-            var payload: [UInt8] = delimiter + sps
-            payload += delimiter + pps
-            payload += delimiter + keyframe
-            
-            if let decContext = self.h264Decoder.decode(payload) {
-                let jpgEncoder = JPEGEncoder(decodeContext: decContext)
-                if let jpeg    = jpgEncoder.encode(with: decContext.frame) {
-                    return jpeg
-                }
-            }
-        }
-        throw MementoError.failedToEncode
     }
     
 }
