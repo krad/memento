@@ -52,6 +52,11 @@ public struct Base64EncodedThumbnailRequest: Codable {
     var spsBytes: [UInt8]? { return decodeBase64(self.sps) }
     var ppsBytes: [UInt8]? { return decodeBase64(self.pps) }
     var payloadBytes: [UInt8] { return decodeBase64(self.payload)! }
+    
+    public func debug() -> String {
+        return [self.sps, self.pps, self.payload].compactMap { return $0 }.joined(separator: "\n\n\n")
+    }
+    
 }
 
 func decodeBase64(_ key: String?) -> [UInt8]? {
