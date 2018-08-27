@@ -67,6 +67,19 @@ public enum MementoError: Error {
     case h264DecodeFailed
     case needDecoderConfig
     case failedToEncode
+    
+    var description: String {
+        switch self {
+        case .thumbnailEncodeFailed:
+            return "Thumbnail Encode Failed"
+        case .h264DecodeFailed:
+            return "h264 Decode Failed"
+        case .needDecoderConfig:
+            return "Missing Decoder Config"
+        case .failedToEncode:
+            return "Failed to encode"
+        }
+    }
 }
 
 final public class Memento {
