@@ -85,16 +85,17 @@ final public class H264Decoder {
     }
     
     deinit {
-        /// free the packet
-        let pPtr = ptrFromAddress(p: &self.packetPtr)
-        av_packet_free(pPtr)
-        
-        /// free the context
-        let cPtr = ptrFromAddress(p: &self.contextPtr)
-        avcodec_free_context(cPtr)
-        
-        /// close the parser
-        av_parser_close(self.parserPtr)
+        avcodec_close(contextPtr)
+//        /// free the packet
+//        let pPtr = ptrFromAddress(p: &self.packetPtr)
+//        av_packet_free(pPtr)
+//
+//        /// free the context
+//        let cPtr = ptrFromAddress(p: &self.contextPtr)
+//        avcodec_free_context(cPtr)
+//
+//        /// close the parser
+//        av_parser_close(self.parserPtr)
     }
     
 }
