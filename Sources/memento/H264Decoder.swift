@@ -64,9 +64,14 @@ final public class H264Decoder {
                     continue
                 }
                 
+                ret = avcodec_send_packet(&context!, &self.packet)
+                ret = avcodec_send_packet(&context!, &self.packet)
+                ret = avcodec_send_packet(&context!, &self.packet)
+                ret = avcodec_send_packet(&context!, &self.packet)
+
                 let picturePtr = av_frame_alloc()
                 var picture    = picturePtr!.pointee
-                ret = avcodec_receive_frame(&self.context!, &picture)
+                ret            = avcodec_receive_frame(&self.context!, &picture)
                 if ret < 0 {
                     print("error decoding, (avcodec_receive_frame)", ret)
                     continue
@@ -85,17 +90,16 @@ final public class H264Decoder {
     }
     
     deinit {
-//        avcodec_close(contextPtr)
-//        /// free the packet
-//        let pPtr = ptrFromAddress(p: &self.packetPtr)
-//        av_packet_free(pPtr)
-//
-//        /// free the context
-//        let cPtr = ptrFromAddress(p: &self.contextPtr)
-//        avcodec_free_context(cPtr)
-//
-//        /// close the parser
-//        av_parser_close(self.parserPtr)
+        /// free the packet
+        let pPtr = ptrFromAddress(p: &self.packetPtr)
+        av_packet_free(pPtr)
+        
+        /// free the context
+        let cPtr = ptrFromAddress(p: &self.contextPtr)
+        avcodec_free_context(cPtr)
+        
+        /// close the parser
+        av_parser_close(self.parserPtr)
     }
     
 }
