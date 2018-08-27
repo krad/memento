@@ -10,17 +10,29 @@ public struct DecodeContext {
 final public class H264Decoder {
     
     fileprivate var codec: AVCodec
-    fileprivate var context: AVCodecContext
+    
+    fileprivate var contextPtr: UnsafeMutablePointer<AVCodecContext>?
+    fileprivate var context: AVCodecContext?
+
+    fileprivate var parserPtr: UnsafeMutablePointer<AVCodecParserContext>?
     fileprivate var parser: AVCodecParserContext
+
+    fileprivate var packetPtr: UnsafeMutablePointer<AVPacket>?
     fileprivate var packet: AVPacket
     
     public init() {
         avcodec_register_all()
-        self.codec   = avcodec_find_decoder(AV_CODEC_ID_H264).pointee
-        self.parser  = av_parser_init(Int32(self.codec.id.rawValue)).pointee
-        self.context = avcodec_alloc_context3(&self.codec).pointee
-        self.packet  = av_packet_alloc().pointee
-        avcodec_open2(&self.context, &self.codec, nil)
+        self.codec      = avcodec_find_decoder(AV_CODEC_ID_H264).pointee
+        
+        self.parserPtr  = av_parser_init(Int32(self.codec.id.rawValue))
+        self.parser     = self.parserPtr!.pointee
+
+        self.contextPtr = avcodec_alloc_context3(&self.codec)
+        self.context    = self.contextPtr?.pointee
+        
+        self.packetPtr  = av_packet_alloc()
+        self.packet     = packetPtr!.pointee
+        avcodec_open2(&self.context!, &self.codec, nil)
     }
     
     final public func decode(_ payload: [UInt8]) -> DecodeContext? {
@@ -33,7 +45,7 @@ final public class H264Decoder {
             var size: Int32 = 0
             
             var ret = av_parser_parse2(&parser,
-                                       &context,
+                                       &context!,
                                        &ptr,
                                        &size,
                                        &safePayload,
@@ -46,7 +58,7 @@ final public class H264Decoder {
                 packet.data = ptr
                 packet.size = size
                 
-                ret = avcodec_send_packet(&context, &self.packet)
+                ret = avcodec_send_packet(&context!, &self.packet)
                 if ret < 0 {
                     print("avcodec_send_packet problem")
                     continue
@@ -54,12 +66,12 @@ final public class H264Decoder {
                 
                 let picturePtr = av_frame_alloc()
                 var picture    = picturePtr!.pointee
-                ret = avcodec_receive_frame(&self.context, &picture)
+                ret = avcodec_receive_frame(&self.context!, &picture)
                 if ret < 0 {
                     print("error decoding, (avcodec_receive_frame)", ret)
                     continue
                 } else {
-                    return DecodeContext(codecContext: self.context, frame: picture)
+                    return DecodeContext(codecContext: self.context!, frame: picture)
                 }
                 
             } else {
@@ -72,4 +84,22 @@ final public class H264Decoder {
         return nil
     }
     
+    deinit {
+        /// free the packet
+        let pPtr = ptrFromAddress(p: &self.packetPtr)
+        av_packet_free(pPtr)
+        
+        /// free the context
+        let cPtr = ptrFromAddress(p: &self.contextPtr)
+        avcodec_free_context(cPtr)
+        
+        /// close the parser
+        av_parser_close(self.parserPtr)
+    }
+    
 }
+
+func ptrFromAddress<T>(p:UnsafeMutablePointer<T>) -> UnsafeMutablePointer<T> {
+    return p
+}
+

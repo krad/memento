@@ -91,7 +91,7 @@ final public class Memento {
         }
         throw MementoError.needDecoderConfig
     }
-    
+        
 }
 
 /// FIXME: Make this more robust

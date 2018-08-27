@@ -44,23 +44,32 @@ class mementoTests: XCTestCase {
         let ppsStr      = try? String(contentsOf: ppsURL)
         let idrStr      = try? String(contentsOf: idrURL)
         
-        let spsData = Data(base64Encoded: spsStr!, options: .ignoreUnknownCharacters)
-        let ppsData = Data(base64Encoded: ppsStr!, options: .ignoreUnknownCharacters)
-        let idrData = Data(base64Encoded: idrStr!, options: .ignoreUnknownCharacters)
-        XCTAssertNotNil(spsData)
-        XCTAssertNotNil(ppsData)
-        XCTAssertNotNil(idrData)
+//        let spsData = Data(base64Encoded: spsStr!, options: .ignoreUnknownCharacters)
+//        let ppsData = Data(base64Encoded: ppsStr!, options: .ignoreUnknownCharacters)
+//        let idrData = Data(base64Encoded: idrStr!, options: .ignoreUnknownCharacters)
+//        XCTAssertNotNil(spsData)
+//        XCTAssertNotNil(ppsData)
+//        XCTAssertNotNil(idrData)
+//        let spsPayload = [UInt8](spsData!)
+//        let ppsPayload = [UInt8](ppsData!)
+//        let idrPayload = [UInt8](idrData!)
         
-        let spsPayload = [UInt8](spsData!)
-        let ppsPayload = [UInt8](ppsData!)
-        let idrPayload = [UInt8](idrData!)
         
-        let outputDir = URL(fileURLWithPath: "/tmp", isDirectory: true)
-        let m         = Memento(outputDir: outputDir, delegate: self)
-        m.set(sps: spsPayload, pps: ppsPayload)
+        let config = ThumbnailConfig(width: 100,
+                                     height: 100,
+                                     rotate: .none,
+                                     fitMode: .preserve,
+                                     flipV: false,
+                                     flipH: false)
         
-        m.decode(keyframe: idrPayload)
+        let req    = Base64EncodedThumbnailRequest(sps: spsStr,
+                                                   pps: ppsStr,
+                                                   payload: idrStr!,
+                                                   config: config)
         
+        let m      = Memento()
+        let result = try? m.decode(req)
+        XCTAssertNotNil(result as? Data)
     }
     
     
